@@ -12,6 +12,7 @@ app.get('/', function(req, res){
     res.send('happy to be here')
 })
 
+// Get all the books
 app.get('/books', function(req, res){
     console.log('getting all books')
     Book.find({})
@@ -23,6 +24,21 @@ app.get('/books', function(req, res){
                 res.json(books)
             }
         })
+})
+
+// Get one book
+app.get('/books/:title', function(req, res){
+    console.log('getting one books')
+    Book.findOne({
+        title: req.params.title
+    }).exec(function(err, book){
+        if (err){
+            res.send('error has occured')
+        } else {
+            console.log(book)
+            res.json(book)
+        }
+    })
 })
 
 app.listen(port, function(){
