@@ -67,6 +67,38 @@ app.post('/book', function(req, res){
     })
 })
 
+// fix error
+mongoose.set('useFindAndModify', false);
+// Update book
+app.put('/book/:id',function(req,res){
+    Book.findOneAndUpdate({
+        _id: req.params.id
+    }, {$set: { title: req.body.title }},
+        { upsert: true },
+        function(err, newBook){
+            if(err){
+                res.send('error updating book')
+            } else {
+                console.log(newBook);
+                res.send(newBook);
+            }
+        })
+    })
+
+// Delete Book
+app.delete('/book/:id',function(req,res){
+    Book.findOneAndRemove({
+        _id: req.params.id
+    }, function(err, book){
+        if(err){
+            res.send('error deleting')
+        } else {
+            console.log(book)
+            res.send(book)
+        }
+    })
+})
+
 app.listen(port, function(){
     console.log(`server running on port ${port}`)
 })
