@@ -8,6 +8,11 @@ var port = 8080
 var db = 'mongodb://localhost/test'
 mongoose.connect(db, { useNewUrlParser: true })
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
+
 app.get('/', function(req, res){
     res.send('happy to be here')
 })
@@ -37,6 +42,27 @@ app.get('/books/:title', function(req, res){
         } else {
             console.log(book)
             res.json(book)
+        }
+    })
+})
+
+// Add a book
+app.post('/book', function(req, res){
+    console.log("create book")
+    var newBook = new Book()
+
+    newBook.title = req.body.title
+    newBook.authors = req.body.authors
+    newBook.category = req.body.category
+
+    // Alternative
+    // Book.create(req.body, function(err, book){})
+    newBook.save(function(err, book){
+        if(err){
+            res.send('error saving book')
+        } else {
+            console.log(book)
+            res.send(book)
         }
     })
 })
